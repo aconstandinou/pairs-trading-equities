@@ -1,4 +1,4 @@
-# Building an Equities Pairs Trading Model
+# Building an Equity Pairs Trading Model
 
 ###### This project is meant to use python and the stattools library in building a pairs trading model. There is also code that utilizes a previously built PostgreSQL database of stock data to find pairs of stocks that exhibit cointegration. By using my equity data warehouse (built with PostgreSQL and Python) the project that follows builds a rolling cointegrated pairs trading model.
 
