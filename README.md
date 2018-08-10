@@ -34,7 +34,7 @@ Here are the python libraries used in the mean reversion tests. Version numbers 
 ### For all Python Scripts - `common_methods.py`
 This python file holds many methods that are used across many of the python scripts. It was built with the desire to DRY my code and reuse as many methods as possible.
 
-### Step 1) Identify Equity Pairs that are Cointegrated - `aug_dickey_fuller_test.py`
+### Step 1) Identify Equity Pairs that are Cointegrated - `identifying_pairs.py`
 
 ### Step 2) Backtest Equity Pairs - `pairs_backtester.py`
 
