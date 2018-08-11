@@ -42,7 +42,7 @@ This text file holds database credentials needed to connect to a PostgreSQL data
 
 The only specific identifier that was previously set was the database_name as 'securities_master'. All other details will be specific to your machine.
 
-### Part 1) Identify Equity Pairs that are Cointegrated - `identifying_pairs.py`
+### Part I - Identifying Equity Pairs that are Cointegrated - `identifying_pairs.py`
 1. Code connects to database and sets variable `year_array` to a list with given range of years.
 
 2. For each year in our range, we need to connect to our DB and find the last trading day for a given year.
@@ -71,7 +71,7 @@ def find_cointegrated_pairs(data, p_value=0.01):
 
 8. Output a text file ex: `coint_method_pairs_20061229.txt` that contains cointegrated pairs for all sectors. The date included in the text file name is the last day of data in our training year. Pairs are used in the following year for backtesting in Part II below. Each row in text file contains `Sector,Pair1,Pair2`.
 
-### Part II) Backtest Equity Pairs - `pairs_backtester.py`
+### Part II - Backtest Equity Pairs - `pairs_backtester.py`
 1. Code connects to database.
 
 2. For all text files generated in Part I, load their file names to a list.
@@ -110,7 +110,7 @@ initial_capital = 50000.0 # total capital allocated to one position in each pair
   |-  Stock1_Stock3
   |-  Stock1_Stock4
 ```
-### Part III) Analyze Trade Results - `trade_analysis.py`
+### Part III - Analyze Trade Results - `trade_analysis.py`
 
 ### Development Environment
 * Spyder IDE version 3.2.8
