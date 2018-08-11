@@ -99,17 +99,12 @@ initial_capital = 50000.0 # total capital allocated to one position in each pair
 ....* folder for each pair containing every trade saved as `entrydate_longpair.txt` ex: `20160430_ShortZTSVRTX.txt`
 ....* `MasterResults.txt` file holds each trade in our backtest that is used in Part III.
 
-PairsResults_5_30
-
- |- MasterResults.txt
-
- |- Stock1_Stock2
-
+    PairsResults_5_30
+     |- MasterResults.txt
+     |- Stock1_Stock2
                |- 20160430_ShortStock1Stock2.txt
-
- |- Stock1_Stock3
- 
- |- Stock1_Stock4
+     |- Stock1_Stock3
+     |- Stock1_Stock4
 
 ### Part III) Analyze Trade Results - `trade_analysis.py`
 
