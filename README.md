@@ -101,14 +101,14 @@ initial_capital = 50000.0 # total capital allocated to one position in each pair
 - `MasterResults.txt` file holds each trade in our backtest that is used in Part III.
 
 #### Directory Tree
-
-* [PairsResults_5_30]
-  *  [MasterResults.txt]
-  *  [Stock1_Stock2]
-  *            [20160430_ShortStock1Stock2.txt]
-  *  [Stock1_Stock3]
-  *  [Stock1_Stock4]
-
+```bash
+- PairsResults_5_30
+  |-  MasterResults.txt
+  |-  Stock1_Stock2
+  |       |--20160430_ShortStock1Stock2.txt
+  |-  Stock1_Stock3
+  |-  Stock1_Stock4
+```
 ### Part III) Analyze Trade Results - `trade_analysis.py`
 
 ### Development Environment
