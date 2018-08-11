@@ -42,7 +42,7 @@ This text file holds database credentials needed to connect to a PostgreSQL data
 
 The only specific identifier that was previously set was the database_name as 'securities_master'. All other details will be specific to your machine.
 
-### Step 1) Identify Equity Pairs that are Cointegrated - `identifying_pairs.py`
+### Part 1) Identify Equity Pairs that are Cointegrated - `identifying_pairs.py`
 1. Code connects to database and sets variable `year_array` to a list with given range of years.
 
 2. For each year in our range, we need to connect to our DB and find the last trading day for a given year.
@@ -69,11 +69,44 @@ def find_cointegrated_pairs(data, p_value=0.01):
 
 7. Remove any pairs that include our SPY ETF.
 
-8. Output a text file ex: `coint_method_pairs_20061229.txt` that contains cointegrated pairs for all sectors. The date included in the text file name is the last day of data in our training year. Pairs are used in the following year for backtesting in step 2 below. Each row in text file contains `Sector,Pair1,Pair2`.
+8. Output a text file ex: `coint_method_pairs_20061229.txt` that contains cointegrated pairs for all sectors. The date included in the text file name is the last day of data in our training year. Pairs are used in the following year for backtesting in Part II below. Each row in text file contains `Sector,Pair1,Pair2`.
 
-### Step 2) Backtest Equity Pairs - `pairs_backtester.py`
+### Part II) Backtest Equity Pairs - `pairs_backtester.py`
+1. Code connects to database.
 
-### Step 3) Analyze Trade Results - `trade_analysis.py`
+2. For all text files generated in Part I, load their file names to a list.
+
+3. For each file to load in step 2, load our text file data by pair into a dictionary where each key is our sector and value is a list of tuples. Each tuple is a pair of two tickers.
+
+4. Create our backtesting date range.
+
+5. For each pair, load their data, merge their data and set parameters for our backtest. These can be changed.
+
+```Python
+short_window = 5 # short rolling average
+long_window = 30 # long rolling average
+
+# BUILDING OUR CLASS
+z_threshold = [1.0, 0.0] # entry and exit thresholds
+lookback_periods = [short_window, long_window] # create a list of our rolling averages
+initial_capital = 50000.0 # total capital allocated to one position in each pair, for total $100,000
+```
+
+6. Backtest each pair using `PairBackTester` class
+
+7. `PairBackTester` class handles the entire backtesting, data storing, and output of our trade results. Results outputted are:
+..* Main directory `PairsResults_5_30` to hold:
+....* folder for each pair containing every trade saved as `entrydate_longpair.txt` ex: `20160430_ShortZTSVRTX.txt`
+....* `MasterResults.txt` file holds each trade in our backtest that is used in Part III.
+
+PairsResults_5_30
+ |- MasterResults.txt
+ |- Stock1_Stock2
+               |- 20160430_ShortStock1Stock2.txt
+ |- Stock1_Stock3
+ |- Stock1_Stock4
+
+### Part III) Analyze Trade Results - `trade_analysis.py`
 
 ### Development Environment
 * Spyder IDE version 3.2.8
