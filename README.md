@@ -95,9 +95,13 @@ initial_capital = 50000.0 # total capital allocated to one position in each pair
 6. Backtest each pair using `PairBackTester` class
 
 7. `PairBackTester` class handles the entire backtesting, data storing, and output of our trade results. Results outputted are:
+
 ..* Main directory `PairsResults_5_30` to hold:
+
 ....* folder for each pair containing every trade saved as `entrydate_longpair.txt` ex: `20160430_ShortZTSVRTX.txt`
+
 ....* `MasterResults.txt` file holds each trade in our backtest that is used in Part III.
+
 
     PairsResults_5_30
      |- MasterResults.txt
