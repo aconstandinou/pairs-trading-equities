@@ -273,9 +273,6 @@ def main():
     cm.write_results_text_file(f_name3, trade_statistics)
     
     #df_res.hist(column='Total_PnL', figsize = (20,20), bins=100)
-
-
-
     
 if __name__ == "__main__":
     main()

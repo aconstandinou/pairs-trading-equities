@@ -223,26 +223,6 @@ class PairBackTester():
                 self.calc_day_PnL()
                 self.collect_data(ii, self.position, self.pos1, self.pos2, self.TrRatio, self.CurrentP_S1, self.CurrentP_S2)
 
-def fetch_last_day_mth(year_, mth_, conn):
-    """
-    return date of the last day of data we have for a given year in our Postgres DB. 
-    args:
-        year_: year, type int
-        conn: a Postgres DB connection object
-    return:
-        integer, last trading day of year that we have data for
-    """  
-    cur = conn.cursor()
-    SQL =   """
-            SELECT MAX(date_part('day', date_price)) FROM daily_data
-            WHERE date_price BETWEEN '%s-%s-01' AND '%s-%s-30'
-            """
-    cur.execute(SQL, [year_,mth_, year_, mth_])        
-    data = cur.fetchall()
-    cur.close()
-    last_day = int(data[0][0])
-    return last_day
-
 
 def main():
     # DB INFO FILE - host, user, password, db_name
@@ -273,12 +253,12 @@ def main():
         
         # start in month 11 not 12 to allow zscores to be calculated
         mth = 11
-        last_tr_day_start = fetch_last_day_mth(end_yr_int, mth, conn)
+        last_tr_day_start = cm.fetch_last_day_any_mth(end_yr_int, mth, conn)
         trd_start_dt = datetime.date(year_int,month_int - 1,last_tr_day_start)
         
         # we need the final day of our year
         mth = 12
-        last_tr_day_end = fetch_last_day_mth(end_yr_int, mth, conn)
+        last_tr_day_end = cm.fetch_last_day_any_mth(end_yr_int, mth, conn)
         trd_end_dt = datetime.date(end_yr_int,month_int,last_tr_day_end)
         
         # load each pair to its appropriate sector key
