@@ -10,7 +10,14 @@
 ### Getting Started
 If you plan on using this code along with the equity database, please reference the following link before moving forward: https://github.com/aconstandinou/data-warehouse-build
 
-Otherwise, you will need to change how the following python scripts access market data.
+##### Otherwise, you will need to change how the following python scripts access market data.
+
+### Quick overview of computed iterations
+I have not documented actual time taken in running the below scripts, but the original database used for this test includes ~ 505 equities and their respective historical data which totals around 1.5 million lines of historical data.
+
+The pairs trading model will only identify pairs to trade within the same sector, and there are 11 sectors total. The total number of potential pairs tested across all sectors is roughly 14,500 pairs.
+
+The current setup also uses 2-year's worth of market data in a rolling fashion starting in 2006 and up until 2016. That creates 11 time periods to verify all potential 14,500 pairs to trade.
 
 ### Prerequisites
 You need to have PostgreSQL and Python installed.
@@ -29,18 +36,18 @@ Here are the python libraries used in the mean reversion tests. Version numbers 
 * os
 * datetime
 
-### Useful Information
+### Useful Information & How to use the code
 
 ### For all Python Scripts
 `common_methods.py`
-This python file holds many methods that are used across many of the python scripts. It was built with the desire to DRY my code and reuse as many methods as possible.
+This python file contains many methods that are used across the python scripts that follow. It was built with the desire to "DRY" (Don't Repeat Yourself) my code and reuse as many methods as possible.
 
 File is imported as `cm` in all the following scripts.
 
 `database_info.txt`
 This text file holds database credentials needed to connect to a PostgreSQL database built in a previous project (link above). Specifically, the file holds four necessary identifiers: database_host, database_user, database_password, database_name
 
-The only specific identifier that was previously set was the database_name as 'securities_master'. All other details will be specific to your machine.
+The only specific identifier that was previously set was the database_name as *securities_master*. All other details will be specific to your local setup.
 
 ### Part I - Identifying Equity Pairs that are Cointegrated - `identifying_pairs.py`
 1. Code connects to database and sets variable `year_array` to a list with given range of years.
@@ -97,10 +104,10 @@ initial_capital = 50000.0 # total capital allocated to one position in each pair
 7. `PairBackTester` class handles the entire backtesting, data storing, and output of our trade results. Results outputted are:
 
 - Main directory `PairsResults_5_30` to hold:
-- folder for each pair containing every trade saved as `entrydate_longpair.txt` ex: `20160430_ShortZTSVRTX.txt`
-- `MasterResults.txt` file holds each trade in our backtest that is used in Part III.
+- Directory for each pair. Directory contains every trade saved as `entrydate_longpair.txt` ex: `20160430_ShortZTSVRTX.txt`. This is also a specific trade's `tradeID`
+- Text file `MasterResults.txt` where each row contains each trade in our backtest that is used in Part III.
 
-#### Directory Tree
+#### Directory Tree Preview
 ```bash
 - PairsResults_5_30
   |-  MasterResults.txt
@@ -110,7 +117,40 @@ initial_capital = 50000.0 # total capital allocated to one position in each pair
   |-  Stock1_Stock3
   |-  Stock1_Stock4
 ```
+
+8. A `tradeID` is created to link trades within the `MasterResults.txt` file and their subdirectory trade file generated
+
 ### Part III - Analyze Trade Results - `trade_analysis.py`
+
+Variable `params` needs to match the directory ending created in Part II. For example, in the previous python script `pairs_backtester.py` the directory created is `PairsResults_5_30`. Therefore `params` needs to equal `_5_30`.
+
+```python
+## these parameters impact file name and sub-folder to gather data from
+params = "_5_30"
+```
+##### Trade Statistics
+`MasterResults.txt` file includes all trade related data to compute our trade statistics. Method `trade_stats` takes care of evaluating these trade results and returns a list with trade statistics.
+
+##### Daily Statistics
+To compute daily statistics, we need to loop through a range of dates, and for each date, verify if we have any open trades. Using `tradeID` from our `MasterResults.txt` file, I created a path to the individual trade data which includes daily PnL for a given trade (amongst other daily trade data).
+
+A class `NewTrade()` is used to load each trade, with specific methods to return required data. Examples include returning a `tradeID`, current day's PnL when provided with a date, exit date check.
+
+`daily_stats` method provides the looping mechanism to walk through each date. We use a dictionary `trd_holder` to store each initialized `NewTrade()` object to a key which is their `tradeID`.
+
+When a trade needs to be removed from our dictionary, we load a trade's `tradeID` to a list called `trds_to_delete` and then loop through each `trd_holder` item and if there is a matching key to `tradeID` then we rename the key to `deleted`.
+
+Finally, we output all data to text files:
+
+```python
+f_name = "daily_results" + params
+f_name2 = "model_daily_stats" + params
+f_name3 = "model_trade_stats" + params
+
+cm.write_results_text_file(f_name, daily_pnl)
+cm.write_results_text_file(f_name2, daily_statistics)
+cm.write_results_text_file(f_name3, trade_statistics)
+```
 
 ### Development Environment
 * Spyder IDE version 3.2.8
