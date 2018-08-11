@@ -31,10 +31,45 @@ Here are the python libraries used in the mean reversion tests. Version numbers 
 
 ### Useful Information
 
-### For all Python Scripts - `common_methods.py`
+### For all Python Scripts
+`common_methods.py`
 This python file holds many methods that are used across many of the python scripts. It was built with the desire to DRY my code and reuse as many methods as possible.
 
+File is imported as `cm` in all the following scripts.
+
+`database_info.txt`
+This text file holds database credentials needed to connect to a PostgreSQL database built in a previous project (link above). Specifically, the file holds four necessary identifiers: database_host, database_user, database_password, database_name
+
+The only specific identifier that was previously set was the database_name as 'securities_master'. All other details will be specific to your machine.
+
 ### Step 1) Identify Equity Pairs that are Cointegrated - `identifying_pairs.py`
+1. Code connects to database and sets variable `year_array` to a list with given range of years.
+
+2. For each year in our range, we need to connect to our DB and find the last trading day for a given year.
+
+3. Build a dictionary where each key is a sector and each value is a list of tickers for given sector.
+
+Variable: `sector_dict = cm.build_dict_of_arrays(list_of_stocks)`
+
+4. Within each sector, for each ticker load two years of data into a pandas dataframe, and create a list of all these dataframes.
+
+```python
+data_array_of_dfs = cm.load_df_stock_data_array(ticker_arr, start_dt, end_dt, conn)
+merged_data = cm.data_array_merge(data_array_of_dfs)
+```
+
+5. Using the `merged_data` variable, find cointegrated pairs within each sector that pass at the 99% critical level. This can be changed within `common_methods.py` with method name `find_cointegrated_pairs`.
+
+Variable to change is a method argument p_value currently defaulted to 0.01.
+```python
+def find_cointegrated_pairs(data, p_value=0.01):
+```
+
+6. OPTIONAL: Currently commented out, but starting at `confidence_level = 1 - 0.01` and up until `plt.show()` you could view the seaborn heatmap built for each sector for a given time period.
+
+7. Remove any pairs that include our SPY ETF.
+
+8. Output a text file ex: `coint_method_pairs_20061229.txt` that contains cointegrated pairs for all sectors. The date included in the text file name is the last day of data in our training year. Pairs are used in the following year for backtesting in step 2 below. Each row in text file contains `Sector,Pair1,Pair2`.
 
 ### Step 2) Backtest Equity Pairs - `pairs_backtester.py`
 
