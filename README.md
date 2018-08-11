@@ -105,7 +105,8 @@ initial_capital = 50000.0 # total capital allocated to one position in each pair
 - PairsResults_5_30
   |-  MasterResults.txt
   |-  Stock1_Stock2
-  |       |--20160430_ShortStock1Stock2.txt
+      |--20160430_ShortStock1Stock2.txt
+      |--20161002_LongStock1Stock2.txt
   |-  Stock1_Stock3
   |-  Stock1_Stock4
 ```
