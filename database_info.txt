@@ -1,0 +1,2 @@
+# input database/user credential data. Must be in order and separated by commas: database_host, database_user, database_password, database_name
+localhost,db_username,db_password,securities_master
